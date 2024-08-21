@@ -27,7 +27,7 @@ class FIFOCache(BaseCaching):
                 dic_items = self.cache_data.items()
                 print(f'DISCARD: {fifo_key}')
                 self.cache_data = {key: value for key, value in dic_items
-                               if key != fifo_key}
+                                   if key != fifo_key}
 
     def get(self, key):
         """gets item of given key"""
