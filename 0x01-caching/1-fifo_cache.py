@@ -4,11 +4,11 @@ BaseCaching = __import__('base_caching').BaseCaching
 
 
 class FIFOCache(BaseCaching):
+    """class first in first out policy caching"""
     def __init__(self):
         """initializing"""
-        super().__init__()
-        self.cache_data = {}
         self.toqueue = []
+        super().__init__()
 
     def put(self, key, item):
         """adding item to cache_data"""
@@ -17,7 +17,7 @@ class FIFOCache(BaseCaching):
                 self.toqueue.remove(key)
             self.toqueue.append(key)
             self.cache_data[key] = item
-            if len(self.toqueue) > BaseCaching.MAX_ITEMS:
+            if len(self.toqueue) > self.MAX_ITEMS:
                 # first item name need to be removed
                 fifo_key = self.toqueue.pop(0)
                 self.cache_data.pop(fifo_key)
