@@ -38,6 +38,12 @@ class LFUCache(BaseCaching):
     def get(self, key):
         """gets item of given key"""
         if self.cache_data.get(key):
-            self.toqueue.remove(key)
-            self.toqueue.append(key)
+            self.lfu[key] += 1
+            if self.toqueue.index(key) + 1 != len(self.toqueue):
+                while (self.toqueue.index(key) + 1 < len(self.toqueue) and
+                       self.lfu[key] >=
+                       self.lfu[self.toqueue[self.toqueue.index(key) + 1]]):
+                    location_item = self.toqueue.index(key) + 1
+                    popped_item = self.toqueue.pop(self.toqueue.index(key))
+                    self.toqueue.insert(location_item, popped_item)
         return self.cache_data.get(key)
