@@ -19,12 +19,10 @@ class FIFOCache(BaseCaching):
                 self.toqueue.remove(key)
             self.toqueue.append(key)
             self.cache_data[key] = item
-            if len(self.cache_data.items()) > BaseCaching.MAX_ITEMS:
+            if len(self.toqueue) > BaseCaching.MAX_ITEMS:
                 # first item name need to be removed
                 fifo_key = self.toqueue.pop(0)
-                dic_items = self.cache_data.items()
-                self.cache_data = {key: value for key, value in dic_items
-                                   if key != fifo_key}
+                self.cache_data.pop(fifo_key)
                 print(f'DISCARD: {fifo_key}')
 
     def get(self, key):
