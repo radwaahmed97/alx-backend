@@ -13,8 +13,12 @@ class FIFOCache(BaseCaching):
 
     def put(self, key, item):
         """adding item to cache_data"""
+        if key is None or item is None:
+            return
+
         if key and item:
             self.cache_data[key] = item
+
         if len(self.cache_data.items()) > BaseCaching.MAX_ITEMS:
             cache_data_queue = queue.Queue()
             for key in self.cache_data.keys():
