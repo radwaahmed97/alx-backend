@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """basic app using Flask and Babel"""
 
+from typing import Dict, Optional
 from flask import Flask, render_template, request, g
 from flask_babel import Babel
 
@@ -25,28 +26,27 @@ users = {
 }
 
 
-def get_user():
+def get_user() -> Optional[Dict]:
     """
     returns a user dictionary
     or None if the ID cannot be found or if login_as was not passed
     """
     login_id = request.args.get('login_as')
     if login_id:
-        return users.get(int(login_id))
+        return users.get(int(login_id), None)
     return None
 
 
 @basic_app.before_request
 def before_request() -> None:
     """ decorator to make it be executed before all other functions."""
-    user = get_user()
-    g.user = user
+    g.user = get_user()
 
 
 @babel.localeselector
 def get_locale():
     """determines the best match with our supported languages"""
-    locale = request.args.get('locale')
+    locale = request.args.get('locale', '')
     if locale in basic_app.config['LANGUAGES']:
         print(locale)
         return locale
