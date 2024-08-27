@@ -15,6 +15,7 @@ class Config(object):
 basic_app = Flask(__name__)
 babel = Babel(basic_app)
 basic_app.config.from_object(Config)
+basic_app.url_map.strict_slashes = False
 
 
 @babel.localeselector
@@ -26,7 +27,7 @@ def get_locale():
 @basic_app.route('/')
 def welcome_hello_world():
     """basic app"""
-    return render_template('2-index.html')
+    return render_template('3-index.html')
 
 
 if __name__ == '__main__':
