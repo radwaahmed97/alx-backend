@@ -14,26 +14,24 @@ users = {
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
-app = Flask(__name__)
-babel = Babel(app)
+basic_app = Flask(__name__)
+babel = Babel(basic_app)
 
 
 class Config(object):
     """ Setup - Babel configuration """
     LANGUAGES = ['en', 'fr']
-    # these are the inherent defaults just btw
     BABEL_DEFAULT_LOCALE = 'en'
     BABEL_DEFAULT_TIMEZONE = 'UTC'
 
 
-# set the above class object as the configuration for the app
-app.config.from_object('5-app.Config')
+basic_app.config.from_object('5-app.Config')
 
 
-@app.route('/', methods=['GET'], strict_slashes=False)
-def index() -> str:
-    """ GET /
-    Return: 4-index.html
+@basic_app.route('/', methods=['GET'], strict_slashes=False)
+def welcome_hello_world() -> str:
+    """
+    welcome world
     """
     return render_template('5-index.html')
 
@@ -41,19 +39,17 @@ def index() -> str:
 @babel.localeselector
 def get_locale() -> str:
     """ Determines best match for supported languages """
-    # check if there is a locale parameter/query string
     if request.args.get('locale'):
         locale = request.args.get('locale')
-        if locale in app.config['LANGUAGES']:
+        if locale in basic_app.config['LANGUAGES']:
             return locale
     else:
-        return request.accept_languages.best_match(app.config['LANGUAGES'])
+        return request.accept_languages.best_match(basic_app.config['LANGUAGES'])
 
 
 def get_user() -> Union[dict, None]:
     """ Returns user dict if ID can be found """
     if request.args.get('login_as'):
-        # have to type cast  the param to be able to search the user dict
         user = int(request.args.get('login_as'))
         if user in users:
             return users.get(user)
@@ -61,7 +57,7 @@ def get_user() -> Union[dict, None]:
         return None
 
 
-@app.before_request
+@basic_app.before_request
 def before_request():
     """ Finds user and sets as global on flask.g.user """
     g.user = get_user()
@@ -70,4 +66,4 @@ def before_request():
 if __name__ == "__main__":
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port)
+    basic_app.run(host=host, port=port)
