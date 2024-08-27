@@ -22,11 +22,11 @@ basic_app.url_map.strict_slashes = False
 def get_locale():
     """determines the best match with our supported languages"""
     locale = request.args.get('locale')
-    if locale in basic_app.config(menu='LANGUAGES'):
+    if locale in basic_app.config['LANGUAGES']:
         print(locale)
         return locale
 
-    return request.accept_languages.best_match(Config.LANGUAGES)
+    return request.accept_languages.best_match(basic_app.Config.LANGUAGES)
 
 
 @basic_app.route('/')
