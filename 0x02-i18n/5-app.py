@@ -25,17 +25,6 @@ users = {
 }
 
 
-@babel.localeselector
-def get_locale():
-    """determines the best match with our supported languages"""
-    locale = request.args.get('locale')
-    if locale in basic_app.config['LANGUAGES']:
-        print(locale)
-        return locale
-
-    return request.accept_languages.best_match(basic_app.Config.LANGUAGES)
-
-
 def get_user():
     """
     returns a user dictionary
@@ -48,10 +37,21 @@ def get_user():
 
 
 @basic_app.before_request
-def before_request():
+def before_request() -> None:
     """ decorator to make it be executed before all other functions."""
     user = get_user()
     g.user = user
+
+
+@babel.localeselector
+def get_locale():
+    """determines the best match with our supported languages"""
+    locale = request.args.get('locale')
+    if locale in basic_app.config['LANGUAGES']:
+        print(locale)
+        return locale
+
+    return request.accept_languages.best_match(basic_app.Config.LANGUAGES)
 
 
 @basic_app.route('/')
